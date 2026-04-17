@@ -307,7 +307,7 @@
             <circle class="timer-progress" id="timer-progress" cx="50" cy="50" r="40"/>
           </svg>
           <div class="timer-inner">
-            <div class="timer-display" id="timer-display">00:00<span class="timer-tenths" id="timer-tenths">.0</span></div>
+            <div class="timer-display" id="timer-display">00:00</div>
             <div class="timer-label">chrono</div>
           </div>
         </div>
@@ -369,7 +369,6 @@
     // Chrono DOM
     const $timer        = document.getElementById('timer');
     const $timerDisplay = document.getElementById('timer-display');
-    const $timerTenths  = document.getElementById('timer-tenths');
     const $timerProgress= document.getElementById('timer-progress');
     const $timerToggle  = document.getElementById('timer-toggle');
     const $timerReset   = document.getElementById('timer-reset');
@@ -494,8 +493,7 @@
       const totalSeconds = Math.floor(ms / 1000);
       const minutes = Math.floor(totalSeconds / 60).toString().padStart(2,'0');
       const seconds = (totalSeconds % 60).toString().padStart(2,'0');
-      const tenths  = Math.floor((ms % 1000) / 100);
-      return { mm: minutes, ss: seconds, t: tenths };
+      return `${minutes}:${seconds}`;
     }
 
     function getTimerColor(ms){
@@ -505,15 +503,7 @@
     }
 
     function renderTimer(){
-      const { mm, ss, t } = formatTime(elapsedMs);
-      // Affiche MM:SS dans le span principal, .t dans le span tenths
-      const mainSpan = $timerDisplay.firstChild;
-      if(mainSpan && mainSpan.nodeType === Node.TEXT_NODE){
-        mainSpan.textContent = `${mm}:${ss}`;
-      } else {
-        $timerDisplay.insertBefore(document.createTextNode(`${mm}:${ss}`), $timerTenths);
-      }
-      $timerTenths.textContent = `.${t}`;
+      $timerDisplay.textContent = formatTime(elapsedMs);
 
       // Cercle SVG — cycle sur CYCLE_MS
       const progress = (elapsedMs % CYCLE_MS) / CYCLE_MS;
