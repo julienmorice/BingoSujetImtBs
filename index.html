@@ -405,18 +405,18 @@
       return ls + t.charAt(0).toLocaleUpperCase('fr-FR') + t.slice(1);
     }
 
-    // Surligne le verbe (après "devez ") et le texte entre « »
+    // Surligne l'action principale (après "devez " jusqu'à la virgule/«/.) et la ressource entre « »
     function renderPitchHTML(subject){
       let html = capitalizeFirst(subject.pitch);
 
-      // Surligne contenu entre guillemets « » en jaune (ressource)
+      // Jaune : ressource entre « »
       html = html.replace(/«\s*([^»]+?)\s*»/g, (_, inner) =>
         `« <span class="hl-element">${inner}</span> »`
       );
 
-      // Surligne le 1er mot après "devez " en cyan (verbe)
-      html = html.replace(/(devez\s+)(\S+)/i, (_, pre, word) =>
-        `${pre}<span class="hl-verbe">${word}</span>`
+      // Bleu : phrase d'action après "devez " jusqu'à la première virgule, «, ou fin de phrase
+      html = html.replace(/(devez\s+)([^,\.«]+)/i, (_, pre, phrase) =>
+        `${pre}<span class="hl-verbe">${phrase}</span>`
       );
 
       return html;
