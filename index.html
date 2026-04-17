@@ -284,7 +284,7 @@
       </div>
 
       <div class="controls">
-        <button id="spinBtn" class="btn" type="button" aria-label="Lancer le tirage (Entrée ou Espace)">Lancer</button>
+        <button id="spinBtn" class="btn" type="button" aria-label="Générer le sujet (Entrée ou Espace)">Générer le sujet</button>
         <label class="toggle" for="sound">
           <input type="checkbox" id="sound" aria-label="Activer le son" checked />
           🔊 Son
@@ -476,7 +476,7 @@
           $pitch.classList.add('show');
           updateSRHint(`Sujet ${subject.id} tiré. ${subject.secteur}, ${subject.element}, ${subject.verbe}.`);
           setBusy(false);
-          if(!hasSpun){ hasSpun = true; $btn.textContent = 'Relancer'; }
+          if(!hasSpun){ hasSpun = true; $btn.textContent = 'Regénérer le sujet'; }
         });
       }, durations[2]);
     }
