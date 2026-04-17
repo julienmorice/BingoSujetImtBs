@@ -38,6 +38,10 @@
       flex-direction:column;
       gap:18px;
     }
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+    }
+    .header-text{ flex:1; }
     header h1{
       margin:0;
       font-weight:800;
@@ -49,6 +53,18 @@
       margin:.25rem 0 0;
       color:var(--muted);
       font-size:14px;
+    }
+    .header-logo{
+      background:#fff;
+      border-radius:12px;
+      padding:8px 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.35);
+      flex-shrink:0;
+    }
+    .header-logo img{
+      display:block;
+      height:clamp(44px, 6vw, 64px);
+      width:auto;
     }
     .machine{
       background:linear-gradient(180deg, #1d224a 0%, var(--panel) 60%);
@@ -263,8 +279,13 @@
 <body>
   <main class="app" role="main" aria-label="Application de tirage de sujets">
     <header>
-      <h1>Bingo sujets IMT-BS !</h1>
-      <p>Appuyez sur <strong>Lancer</strong> (ou Entrée/Espace). Les roues s'arrêtent l'une après l'autre, puis la consigne apparaît.</p>
+      <div class="header-text">
+        <h1>Bingo sujets IMT-BS !</h1>
+        <p>Appuyez sur <strong>Générer le sujet</strong> (ou Entrée/Espace). Les roues s'arrêtent l'une après l'autre, puis la consigne apparaît.</p>
+      </div>
+      <div class="header-logo">
+        <img src="logo_IMT_Bs.png" alt="IMT Business School" />
+      </div>
     </header>
 
     <section class="machine" role="group" aria-label="Machine à sous créative" aria-busy="false">
