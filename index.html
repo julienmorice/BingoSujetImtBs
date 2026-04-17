@@ -237,12 +237,32 @@
     // ————————————————————————————————
     const DATA = {
       "sujets": [
-        { "id": 1, "secteur": "Agriculture",   "element": "Souveraineté alimentaire", "verbe": "proposer",   "pitch": "Vous devez proposer un projet innovant pour garantir la souveraineté alimentaire face aux défis mondiaux." },
-        { "id": 2, "secteur": "Environnement", "element": "Drones",                    "verbe": "protéger",   "pitch": "Vous devez protéger les écosystèmes en intégrant l’élément « drones »" },
-        { "id": 3, "secteur": "Santé",         "element": "Robot",                     "verbe": "intégrer",   "pitch": "Vous devez intégrer des robots ambulanciers autonomes dans les services d’urgence." },
-        { "id": 4, "secteur": "Tourisme",      "element": "Application",               "verbe": "réinventer", "pitch": "Vous devez réinventer le secteur du tourisme en intégrant l’élément « application »" },
-        { "id": 5, "secteur": "Économie",      "element": "Cryptomonnaie",             "verbe": "développer", "pitch": "Vous devez développer un projet facilitant le commerce international entre petites entreprises grâce à une « cryptomonnaie universelle »." },
-        { "id": 6, "secteur": "Société",       "element": "Consommation décarbonée",   "verbe": "encourager", "pitch": "Vous devez encourager un changement sociétal en intégrant l’élément « consommation décarbonée »." }
+        { "id": 1,  "secteur": "Éducation",     "element": "Application mobile",     "verbe": "améliorer",    "pitch": "Vous devez améliorer les ventes dans le secteur de l’éducation, via une application mobile." },
+        { "id": 2,  "secteur": "Santé",          "element": "IA",                     "verbe": "réinventer",   "pitch": "Vous devez réinventer le secteur de la santé, en intégrant la ressource « IA »." },
+        { "id": 3,  "secteur": "Technologie",    "element": "Plastique",              "verbe": "favoriser",    "pitch": "Vous devez favoriser le recyclage dans le secteur des nouvelles technologies, en intégrant la ressource « plastique »." },
+        { "id": 4,  "secteur": "Mode",           "element": "Eau",                    "verbe": "valoriser",    "pitch": "Vous devez valoriser une solution innovante dans le secteur de la mode, en intégrant la ressource « eau »." },
+        { "id": 5,  "secteur": "Alimentaire",    "element": "Carton",                 "verbe": "créer",        "pitch": "Vous devez créer une solution innovante dans le secteur alimentaire, en intégrant la ressource « carton »." },
+        { "id": 6,  "secteur": "Mode",           "element": "Plateforme digitale",    "verbe": "recycler",     "pitch": "Vous devez créer une plateforme digitale dans le secteur de la mode en intégrant le verbe « recycler »." },
+        { "id": 7,  "secteur": "Santé",          "element": "Constantes biologiques", "verbe": "sensibiliser", "pitch": "Vous devez proposer une solution dans le secteur de la santé, qui encourage la mobilité par le suivi des constantes biologiques de la population." },
+        { "id": 8,  "secteur": "Mobilité",       "element": "Application",            "verbe": "encourager",   "pitch": "Vous devez proposer une solution qui encourage la mobilité, en intégrant la ressource « application »." },
+        { "id": 9,  "secteur": "Technologie",    "element": "Drone",                  "verbe": "recycler",     "pitch": "Vous devez proposer une solution innovante dans le secteur technologique, en intégrant la ressource « drone » et le verbe « recycler »." },
+        { "id": 10, "secteur": "Agriculture",    "element": "Capteur",                "verbe": "réinventer",   "pitch": "Vous devez réinventer le secteur de l’agriculture en intégrant la ressource « capteur »." },
+        { "id": 11, "secteur": "Sport",          "element": "IA",                     "verbe": "transformer",  "pitch": "Vous devez proposer une solution innovante dans le secteur du sport, en intégrant la ressource « IA », dans une logique de transformation de la société." },
+        { "id": 12, "secteur": "Alimentaire",    "element": "Lunettes connectées",    "verbe": "créer",        "pitch": "Vous devez créer une solution innovante dans le secteur alimentaire en intégrant la ressource « lunettes connectées »." },
+        { "id": 13, "secteur": "Sport",          "element": "Réalité augmentée",      "verbe": "créer",        "pitch": "Vous devez créer une solution innovante dans le secteur du sport en intégrant l’élément « réalité augmentée »." },
+        { "id": 14, "secteur": "Société",        "element": "Aliments",               "verbe": "encourager",   "pitch": "Vous devez encourager la consommation locale pour renforcer la souveraineté alimentaire d’un territoire." },
+        { "id": 15, "secteur": "Environnement",  "element": "Eau",                    "verbe": "optimiser",    "pitch": "Vous devez optimiser la gestion de l’eau afin de renforcer la souveraineté alimentaire d’un pays." },
+        { "id": 16, "secteur": "Sécurité",       "element": "Drone",                  "verbe": "créer",        "pitch": "Vous devez créer une solution innovante dans le secteur de la sécurité, en intégrant la ressource « drone »." },
+        { "id": 17, "secteur": "Mode",           "element": "Réalité augmentée",      "verbe": "développer",   "pitch": "Vous devez développer une solution innovante dans le secteur de la mode, en intégrant la ressource « réalité augmentée »." },
+        { "id": 18, "secteur": "Géopolitique",   "element": "Plateforme digitale",    "verbe": "favoriser",    "pitch": "Vous devez favoriser le partage de données dans le secteur géopolitique, en intégrant la ressource « plateforme digitale »." },
+        { "id": 19, "secteur": "Mobilité",       "element": "Moyen de transport",     "verbe": "révolutionner","pitch": "Vous devez révolutionner le secteur de la mobilité à travers la mise en place de moyens de transport autonomes." },
+        { "id": 20, "secteur": "Tourisme",       "element": "Satellite",              "verbe": "sécuriser",    "pitch": "Vous devez sécuriser le secteur du tourisme en intégrant la ressource « satellite »." },
+        { "id": 21, "secteur": "Mobilité",       "element": "Cryptomonnaie",          "verbe": "améliorer",    "pitch": "Vous devez améliorer le secteur de la mobilité, en intégrant la ressource « cryptomonnaie »." },
+        { "id": 22, "secteur": "Sécurité",       "element": "Robot",                  "verbe": "réinventer",   "pitch": "Vous devez réinventer le secteur de la sécurité, en intégrant la ressource « robot »." },
+        { "id": 23, "secteur": "International",  "element": "Biométrie",              "verbe": "développer",   "pitch": "Vous devez développer une solution innovante dans le secteur international, en intégrant la ressource « biométrie »." },
+        { "id": 24, "secteur": "Tourisme",       "element": "Robot",                  "verbe": "développer",   "pitch": "Vous devez développer le secteur du tourisme, en intégrant la ressource « robot »." },
+        { "id": 25, "secteur": "International",  "element": "Aliments",               "verbe": "développer",   "pitch": "Vous devez développer la coopération internationale afin d’améliorer la souveraineté alimentaire de plusieurs régions du monde." },
+        { "id": 26, "secteur": "Tourisme",       "element": "Moyen de transport",     "verbe": "réinventer",   "pitch": "Vous devez réinventer le secteur du tourisme, en intégrant la ressource « moyen de transport », dans une logique de respect de l’environnement." }
       ]
     };
 
