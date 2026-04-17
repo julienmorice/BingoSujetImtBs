@@ -404,18 +404,20 @@
       return ls + t.charAt(0).toLocaleUpperCase('fr-FR') + t.slice(1);
     }
 
-    // Surligne l'action principale (après "devez " jusqu'à la virgule/«/.) et la ressource entre « »
+    // Surligne uniquement le mot du secteur en bleu et la ressource entre « » en jaune
     function renderPitchHTML(subject){
       let html = capitalizeFirst(subject.pitch);
+
+      // Bleu : mot du secteur (correspondance exacte, insensible à la casse)
+      const sectEsc = subject.secteur.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      html = html.replace(
+        new RegExp(`(?<![a-zA-ZÀ-ÿ0-9])(${sectEsc})(?![a-zA-ZÀ-ÿ0-9])`, 'gi'),
+        (_, m) => `<span class="hl-verbe">${m}</span>`
+      );
 
       // Jaune : ressource entre « »
       html = html.replace(/«\s*([^»]+?)\s*»/g, (_, inner) =>
         `« <span class="hl-element">${inner}</span> »`
-      );
-
-      // Bleu : phrase d'action après "devez " jusqu'à la première virgule, «, ou fin de phrase
-      html = html.replace(/(devez\s+)([^,\.«]+)/i, (_, pre, phrase) =>
-        `${pre}<span class="hl-verbe">${phrase}</span>`
       );
 
       return html;
