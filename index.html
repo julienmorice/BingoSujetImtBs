@@ -274,8 +274,6 @@
     .timer-legend b{ color:var(--noir); font-weight:600; }
     .timer.state-warn{ border-color:var(--violet); }
     .timer.state-alert{ border-color:var(--noir); }
-    .timer.state-alert .timer-display{ animation:blink 1s steps(2, start) infinite; }
-    @keyframes blink{ to{ visibility:hidden; } }
 
     /* —— Pied de page —— */
     footer{
@@ -297,6 +295,9 @@
     :fullscreen .app{ width:min(1400px, 100%); justify-content:center; }
     :fullscreen .value{ font-size:clamp(28px, 3.6vw, 46px); }
     :fullscreen .pitch-text{ font-size:clamp(28px, 3.4vw, 48px); }
+    :-webkit-full-screen .app{ width:min(1400px, 100%); justify-content:center; }
+    :-webkit-full-screen .value{ font-size:clamp(28px, 3.6vw, 46px); }
+    :-webkit-full-screen .pitch-text{ font-size:clamp(28px, 3.4vw, 48px); }
 
     @media (max-width: 720px){
       .app{ padding:20px 16px 12px; gap:18px; }
@@ -409,7 +410,6 @@
           <span class="lg-noir"><b>au-delà de 5 min</b></span>
         </p>
       </div>
-      <span class="sr-only" id="timer-sr" aria-live="polite"></span>
     </section>
   </main>
 
@@ -507,7 +507,6 @@
     const $timerProgress= document.getElementById('timer-progress');
     const $timerToggle  = document.getElementById('timer-toggle');
     const $timerReset   = document.getElementById('timer-reset');
-    const $timerSr      = document.getElementById('timer-sr');
 
     // État
     let isSpinning = false;
@@ -536,15 +535,15 @@
     $soundBtn.addEventListener('click', toggleSound);
 
     let audioCtx = null;
-    function beep(freq = 760, duration = 110){
+    function beep(freq = 760, duration = 110, volume = 0.07, type = 'sine'){
       if(!soundOn) return;
       try{
         if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const o = audioCtx.createOscillator(), g = audioCtx.createGain();
         const t = audioCtx.currentTime;
-        o.type = 'sine'; o.frequency.value = freq;
+        o.type = type; o.frequency.value = freq;
         g.gain.setValueAtTime(0.0001, t);
-        g.gain.exponentialRampToValueAtTime(0.07, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(volume, t + 0.005);
         g.gain.exponentialRampToValueAtTime(0.0001, t + duration / 1000);
         o.connect(g); g.connect(audioCtx.destination);
         o.start(t); o.stop(t + duration / 1000 + 0.02);
@@ -552,12 +551,19 @@
     }
 
     // Plein écran
+    // Variante préfixée « webkit » pour les anciens Safari sur iPad
+    const root = document.documentElement;
+    const fsRequest = root.requestFullscreen || root.webkitRequestFullscreen;
+    const fsExit    = document.exitFullscreen || document.webkitExitFullscreen;
+    const fsActive  = () => document.fullscreenElement || document.webkitFullscreenElement;
     function toggleFullscreen(){
-      if(!document.fullscreenElement) document.documentElement.requestFullscreen?.().catch(()=>{});
-      else document.exitFullscreen?.();
+      try{
+        const p = fsActive() ? fsExit.call(document) : fsRequest.call(root);
+        p?.catch?.(()=>{});
+      }catch(e){}
     }
     $fsBtn.addEventListener('click', toggleFullscreen);
-    if(!document.documentElement.requestFullscreen) $fsBtn.hidden = true;
+    if(!fsRequest) $fsBtn.hidden = true;
 
     // Tirage sans remise : chaque sujet sort une fois avant que la liste ne soit remise en jeu
     function refillBag(){
@@ -658,6 +664,11 @@
         }, reduceMotion ? 120 : 70);
       });
 
+      // Cliquetis de machine à sous tant que les roues tournent (seul son avec l'arrêt des roues)
+      let tickN = 0;
+      const ticker = setInterval(()=> beep(tickN++ % 2 ? 1400 : 1700, 28, 0.035, 'triangle'), 110);
+      setTimeout(()=> clearInterval(ticker), durations[2]);
+
       function stopReel(i, finalVal){
         clearInterval(intervals[i]);
         reels[i].valueEl.textContent = finalVal;
@@ -692,7 +703,6 @@
     let timerInterval = null;
     let elapsedMs = 0;
     let timerRunning = false;
-    let lastState = 'ok';
 
     function formatTime(ms){
       const totalSeconds = Math.floor(ms / 1000);
@@ -713,12 +723,6 @@
       $timerProgress.style.stroke = color;
       $timer.classList.toggle('state-warn',  state === 'warn');
       $timer.classList.toggle('state-alert', state === 'alert');
-
-      if(state !== lastState){
-        if(state === 'warn')  { beep(520, 220); $timerSr.textContent = '3 minutes écoulées'; }
-        if(state === 'alert') { beep(440, 320); setTimeout(()=> beep(440, 320), 380); $timerSr.textContent = '5 minutes écoulées'; }
-        lastState = state;
-      }
     }
 
     function startTimer(){
@@ -743,7 +747,6 @@
     function resetTimer(){
       stopTimer();
       elapsedMs = 0;
-      lastState = 'ok';
       $timerToggle.textContent = '▶ Démarrer';
       renderTimer();
     }
