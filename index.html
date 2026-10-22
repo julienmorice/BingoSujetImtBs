@@ -16,7 +16,6 @@
       --texte-doux:rgba(0,0,0,.62);
       --font:"Helvetica Neue", "Helvetica Neue LT Std", Helvetica, Arial, sans-serif;
       --radius:4px;
-      --timer-color:var(--bleu);
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
@@ -237,17 +236,9 @@
       background:var(--blanc);
     }
     .timer-circle-wrap{ position:relative; width:118px; height:118px; flex-shrink:0; }
-    .timer-svg{ width:118px; height:118px; transform:rotate(-90deg); }
-    .timer-track{ fill:none; stroke:rgba(0,0,0,.08); stroke-width:8; }
-    .timer-progress{
-      fill:none;
-      stroke:var(--timer-color);
-      stroke-width:8;
-      stroke-linecap:butt;
-      stroke-dasharray:251.3;
-      stroke-dashoffset:251.3;
-      transition:stroke-dashoffset .25s linear, stroke .4s ease;
-    }
+    .timer-svg{ width:118px; height:118px; }
+    /* Anneau fixe : aucun repère de durée (les candidats gèrent leur temps seuls) */
+    .timer-track{ fill:none; stroke:var(--bleu); stroke-width:8; }
     .timer-inner{
       position:absolute; inset:0;
       display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
@@ -262,18 +253,6 @@
     }
     .timer-info{ flex:1; min-width:200px; display:flex; flex-direction:column; gap:12px; }
     .timer-controls{ display:flex; gap:10px; flex-wrap:wrap; }
-    .timer-legend{
-      margin:0; font-size:13px; color:var(--texte-doux);
-      display:flex; gap:16px; flex-wrap:wrap;
-    }
-    .timer-legend span::before{
-      content:""; display:inline-block; width:10px; height:10px; margin-right:6px;
-      vertical-align:-1px; background:currentColor;
-    }
-    .lg-bleu{ color:var(--bleu); } .lg-violet{ color:var(--violet); } .lg-noir{ color:var(--noir); }
-    .timer-legend b{ color:var(--noir); font-weight:600; }
-    .timer.state-warn{ border-color:var(--violet); }
-    .timer.state-alert{ border-color:var(--noir); }
 
     /* —— Pied de page —— */
     footer{
@@ -392,7 +371,6 @@
       <div class="timer-circle-wrap" aria-hidden="true">
         <svg class="timer-svg" viewBox="0 0 100 100">
           <circle class="timer-track" cx="50" cy="50" r="40"/>
-          <circle class="timer-progress" id="timer-progress" cx="50" cy="50" r="40"/>
         </svg>
         <div class="timer-inner">
           <div class="timer-display" id="timer-display">00:00</div>
@@ -404,11 +382,6 @@
           <button id="timer-toggle" class="btn btn-ghost" type="button">▶ Démarrer</button>
           <button id="timer-reset" class="btn btn-ghost" type="button">↺ Remettre à zéro</button>
         </div>
-        <p class="timer-legend">
-          <span class="lg-bleu"><b>0 à 3 min</b></span>
-          <span class="lg-violet"><b>3 à 5 min</b></span>
-          <span class="lg-noir"><b>au-delà de 5 min</b></span>
-        </p>
       </div>
     </section>
   </main>
@@ -504,7 +477,6 @@
     // Chrono DOM
     const $timer        = document.getElementById('timer');
     const $timerDisplay = document.getElementById('timer-display');
-    const $timerProgress= document.getElementById('timer-progress');
     const $timerToggle  = document.getElementById('timer-toggle');
     const $timerReset   = document.getElementById('timer-reset');
 
@@ -695,11 +667,6 @@
     }
 
     // —— Chronomètre ——
-    const CIRCUMFERENCE = 2 * Math.PI * 40; // 251.3
-    const WARN_MS  = 3 * 60 * 1000;  // 3 min → violet
-    const ALERT_MS = 5 * 60 * 1000;  // 5 min → noir
-    const CYCLE_MS = 5 * 60 * 1000;  // le cercle se remplit en 5 min
-
     let timerInterval = null;
     let elapsedMs = 0;
     let timerRunning = false;
@@ -713,16 +680,6 @@
 
     function renderTimer(){
       $timerDisplay.textContent = formatTime(elapsedMs);
-
-      // Le cercle se remplit jusqu'à 5 min puis reste plein
-      const progress = Math.min(elapsedMs, CYCLE_MS) / CYCLE_MS;
-      $timerProgress.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
-
-      const state = elapsedMs >= ALERT_MS ? 'alert' : elapsedMs >= WARN_MS ? 'warn' : 'ok';
-      const color = state === 'alert' ? 'var(--noir)' : state === 'warn' ? 'var(--violet)' : 'var(--bleu)';
-      $timerProgress.style.stroke = color;
-      $timer.classList.toggle('state-warn',  state === 'warn');
-      $timer.classList.toggle('state-alert', state === 'alert');
     }
 
     function startTimer(){
