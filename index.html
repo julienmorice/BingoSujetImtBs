@@ -221,6 +221,11 @@
       padding:0 .18em; border-radius:2px;
       box-decoration-break:clone; -webkit-box-decoration-break:clone;
     }
+    .hl-verbe{
+      background:var(--noir); color:var(--blanc);
+      padding:0 .18em; border-radius:2px;
+      box-decoration-break:clone; -webkit-box-decoration-break:clone;
+    }
     @keyframes fadeUp{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
 
     /* —— Chronomètre —— */
@@ -446,6 +451,38 @@
       ]
     };
 
+    // Mots surlignés dans chaque consigne : secteur (bleu), ressource (violet), verbe (noir).
+    // Texte tel qu'il apparaît dans la consigne ; null quand le mot n'y figure pas.
+    const SURLIGNAGE = {
+      1:  { secteur: "éducation",              element: "application mobile",    verbe: "améliorer" },
+      2:  { secteur: "santé",                  element: "IA",                    verbe: "réinventer" },
+      3:  { secteur: "nouvelles technologies", element: "plastique",             verbe: "favoriser" },
+      4:  { secteur: "mode",                   element: "eau",                   verbe: "valoriser" },
+      5:  { secteur: "alimentaire",            element: "carton",                verbe: "créer" },
+      6:  { secteur: "mode",                   element: "plateforme digitale",   verbe: "recycler" },
+      7:  { secteur: "santé",                  element: "IA",                    verbe: null },
+      8:  { secteur: "mobilité",               element: "application",           verbe: "encourage" },
+      9:  { secteur: "technologique",          element: "drone",                 verbe: "recycler" },
+      10: { secteur: "agriculture",            element: "IA",                    verbe: "réinventer" },
+      11: { secteur: "sport",                  element: "IA",                    verbe: "transformation" },
+      12: { secteur: "alimentaire",            element: "lunettes connectées",   verbe: "créer" },
+      13: { secteur: "sport",                  element: "réalité augmentée",     verbe: "créer" },
+      14: { secteur: null,                     element: "alimentaire",           verbe: "encourager" },
+      15: { secteur: null,                     element: "eau",                   verbe: "optimiser" },
+      16: { secteur: "sécurité",               element: "drone",                 verbe: "créer" },
+      17: { secteur: "mode",                   element: "réalité augmentée",     verbe: "développer" },
+      18: { secteur: "géopolitique",           element: "plateforme digitale",   verbe: "favoriser" },
+      19: { secteur: "mobilité",               element: "moyens de transport",   verbe: "révolutionner" },
+      20: { secteur: "tourisme",               element: "satellite",             verbe: "sécuriser" },
+      21: { secteur: "mobilité",               element: "cryptomonnaie",         verbe: "améliorer" },
+      22: { secteur: "sécurité",               element: "robot",                 verbe: "réinventer" },
+      23: { secteur: "international",          element: "biométrie",             verbe: "développer" },
+      24: { secteur: "tourisme",               element: "robot",                 verbe: "développer" },
+      25: { secteur: "internationale",         element: "alimentaire",           verbe: "développer" },
+      26: { secteur: "tourisme",               element: "moyen de transport",    verbe: "réinventer" },
+      27: { secteur: "santé",                  element: "robot",                 verbe: "révolutionner" }
+    };
+
     // DOM
     const $machine    = document.querySelector('.machine');
     const $btn        = document.getElementById('spinBtn');
@@ -562,21 +599,31 @@
     }
     const escapeHTML = s => s.replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
 
-    // Surligne le mot du secteur en bleu et la ressource entre « » en violet
+    // Surligne le secteur en bleu, la ressource en violet et le verbe en noir (première occurrence de chacun)
     function renderPitchHTML(subject){
-      let html = escapeHTML(capitalizeFirst(subject.pitch));
+      const text = capitalizeFirst(subject.pitch);
+      const mots = SURLIGNAGE[subject.id] || {};
+      const ranges = [];
+      ['secteur', 'element', 'verbe'].forEach(type => {
+        const mot = mots[type];
+        if(!mot) return;
+        const esc = mot.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const m = new RegExp(`(?<![a-zA-ZÀ-ÿ0-9])${esc}(?![a-zA-ZÀ-ÿ0-9])`, 'i').exec(text);
+        if(!m) return;
+        const start = m.index, end = m.index + m[0].length;
+        if(ranges.some(r => start < r.end && end > r.start)) return;
+        ranges.push({ start, end, type });
+      });
+      ranges.sort((a, b) => a.start - b.start);
 
-      const sectEsc = subject.secteur.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      html = html.replace(
-        new RegExp(`(?<![a-zA-ZÀ-ÿ0-9])(${sectEsc})(?![a-zA-ZÀ-ÿ0-9])`, 'gi'),
-        (_, m) => `<span class="hl-secteur">${m}</span>`
-      );
-
-      html = html.replace(/«\s*([^»]+?)\s*»/g, (_, inner) =>
-        `«&nbsp;<span class="hl-element">${inner}</span>&nbsp;»`
-      );
-
-      return html;
+      let html = '', pos = 0;
+      ranges.forEach(r => {
+        html += escapeHTML(text.slice(pos, r.start));
+        html += `<span class="hl-${r.type}">${escapeHTML(text.slice(r.start, r.end))}</span>`;
+        pos = r.end;
+      });
+      html += escapeHTML(text.slice(pos));
+      return html.replace(/« /g, '«&nbsp;').replace(/ »/g, '&nbsp;»');
     }
 
     function setBusy(busy){
